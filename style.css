@@ -1,0 +1,47 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&family=Playfair+Display:wght@700&display=swap');
+
+body {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    scroll-behavior: smooth;
+}
+
+h1, h2, h3 {
+    font-family: 'Playfair Display', serif;
+}
+
+.glass-nav {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+}
+
+#gallery-slider video, #gallery-slider img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.service-card {
+    transition: all 0.4s ease;
+    border: 1px solid rgba(0,0,0,0.05);
+}
+
+.service-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 20px 40px rgba(14, 165, 233, 0.1);
+}
+/* Bouton urgence pulsant */
+.urgence-pulse {
+    animation: urgencePulse 1.8s infinite;
+}
+
+@keyframes urgencePulse {
+    0%, 100% {
+        box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.7);
+        transform: scale(1);
+    }
+    50% {
+        box-shadow: 0 0 0 12px rgba(220, 38, 38, 0);
+        transform: scale(1.05);
+    }
+}
