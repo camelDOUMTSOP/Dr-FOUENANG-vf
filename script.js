@@ -211,7 +211,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const name = document.getElementById('p-name').value;
         const motif = document.getElementById('p-motif').value;
         const text = `Bonjour Dr Patrick FOUENANG, je souhaite prendre RDV.\nNom: ${name}\nMotif: ${motif}`;
-        window.open(`https://wa.me/237694390340?text=${encodeURIComponent(text)}`, '_blank');
+        window.open(`https://wa.me/237699485207?text=${encodeURIComponent(text)}`, '_blank');
     };
 });
 
@@ -247,6 +247,6 @@ function envoyerUrgence() {
     const name = document.getElementById('u-name').value.trim() || 'Patient';
     const type = document.getElementById('u-type').value;
     const text = `🚨 *URGENCE DENTAIRE*\n\nBonjour Dr Patrick FOUENANG,\n\nJe suis *${name}* et j'ai besoin d'une consultation urgente.\n\n*Motif :* ${type}\n\nMerci de me rappeler dès que possible.`;
-    window.open(`https://wa.me/237694390340?text=${encodeURIComponent(text)}`, '_blank');
+    window.open(`https://wa.me/237699485207?text=${encodeURIComponent(text)}`, '_blank');
     closeUrgence();
 }
