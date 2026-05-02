@@ -1,0 +1,67 @@
+backend:
+  name: git-gateway
+  branch: main
+
+media_folder: "images/uploads"
+public_folder: "/images/uploads"
+
+locale: fr
+
+collections:
+
+  - name: "blog"
+    label: "📝 Articles de Blog"
+    folder: "_posts"
+    create: true
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    fields:
+      - { label: "Titre", name: "title", widget: "string" }
+      - { label: "Catégorie", name: "tag", widget: "select", options: ["Conseil", "Prévention", "Expertise", "Promotion", "Actualité"] }
+      - { label: "Résumé court", name: "desc", widget: "text" }
+      - { label: "Image principale", name: "img", widget: "image" }
+      - { label: "Contenu de l'article", name: "body", widget: "markdown" }
+      - { label: "Date de publication", name: "date", widget: "datetime" }
+
+  - name: "galerie"
+    label: "🖼️ Photos du Cabinet"
+    folder: "_galerie"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "Description", name: "title", widget: "string" }
+      - { label: "Photo", name: "img", widget: "image" }
+      - { label: "Ordre", name: "order", widget: "number", default: 1 }
+
+  - name: "cas_cliniques"
+    label: "🦷 Cas Cliniques"
+    folder: "_cas"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "Titre", name: "title", widget: "string" }
+      - { label: "Photo", name: "img", widget: "image" }
+      - { label: "Description", name: "desc", widget: "text", required: false }
+
+  - name: "annonces"
+    label: "📢 Annonces & Promotions"
+    folder: "_annonces"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "Titre", name: "title", widget: "string" }
+      - { label: "Texte", name: "body", widget: "text" }
+      - { label: "Image", name: "img", widget: "image", required: false }
+      - { label: "Activer", name: "active", widget: "boolean", default: true }
+
+  - name: "parametres"
+    label: "⚙️ Informations du Cabinet"
+    files:
+      - name: "contact"
+        label: "📞 Contact & Adresse"
+        file: "_data/contact.json"
+        fields:
+          - { label: "Téléphone WhatsApp", name: "telephone", widget: "string" }
+          - { label: "Adresse", name: "adresse", widget: "string" }
+          - { label: "Facebook", name: "facebook", widget: "string", required: false }
+          - { label: "Instagram", name: "instagram", widget: "string", required: false }
+          - { label: "Horaires", name: "horaires", widget: "text" }
