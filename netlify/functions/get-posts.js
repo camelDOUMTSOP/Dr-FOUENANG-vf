@@ -4,7 +4,7 @@ exports.handler = async function(event, context) {
   const owner = 'camelDOUMTSOP';
   const repo = 'Dr-FOUENANG-vf';
   const branch = 'main';
- const folder = '_messages';
+const folder = '_posts';
 
   try {
     const data = await fetchJSON(
