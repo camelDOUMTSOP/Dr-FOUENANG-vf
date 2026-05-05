@@ -11,7 +11,7 @@ collections:
 
   - name: "blog"
     label: "📝 Articles de Blog"
-    folder: "_posts"
+    folder: "_messages"
     create: true
     slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
     fields:

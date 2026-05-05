@@ -150,28 +150,64 @@ document.addEventListener('DOMContentLoaded', () => {
 
     /* --- BLOG --- */
     const bGrid = document.getElementById('blog-grid');
-    BLOG_POSTS.forEach((post, index) => {
-        bGrid.innerHTML += `
-            <div class="bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition cursor-pointer group">
-                <div class="h-52 bg-slate-200 relative overflow-hidden">
-                    <img src="${post.img}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
-                    <span class="absolute top-4 left-4 bg-sky-600 text-white text-[10px] px-3 py-1 rounded-full font-bold uppercase">${post.tag}</span>
-                </div>
-                <div class="p-8">
-                    <h4 class="font-bold text-xl mb-3">${post.title}</h4>
-                    <p class="text-slate-500 text-sm mb-6">${post.desc}</p>
-                    <button onclick="openBlog(${index})" class="text-sky-600 font-bold text-sm flex items-center gap-2 hover:gap-3 transition-all">
-                        Découvrir l'article <i class="fas fa-arrow-right text-xs"></i>
-                    </button>
-                </div>
-            </div>`;
-    });
+
+    fetch('/.netlify/functions/get-posts')
+        .then(res => res.json())
+        .then(cmsPosts => {
+            const allPosts = cmsPosts.length > 0 ? cmsPosts : BLOG_POSTS;
+            const isCms = cmsPosts.length > 0;
+            allPosts.forEach((post, index) => {
+                bGrid.innerHTML += `
+                    <div class="bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition cursor-pointer group">
+                        <div class="h-52 bg-slate-200 relative overflow-hidden">
+                            <img src="${post.img}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" onerror="this.src='https://images.unsplash.com/photo-1588776814546-1ffbb172ef3a?w=800&auto=format&fit=crop'">
+                            <span class="absolute top-4 left-4 bg-sky-600 text-white text-[10px] px-3 py-1 rounded-full font-bold uppercase">${post.tag}</span>
+                        </div>
+                        <div class="p-8">
+                            <h4 class="font-bold text-xl mb-3">${post.title}</h4>
+                            <p class="text-slate-500 text-sm mb-6">${post.desc}</p>
+                            <button onclick="openBlog(${index}, ${isCms})" class="text-sky-600 font-bold text-sm flex items-center gap-2 hover:gap-3 transition-all">
+                                Découvrir l'article <i class="fas fa-arrow-right text-xs"></i>
+                            </button>
+                        </div>
+                    </div>`;
+            });
+            window._allPosts = allPosts;
+        })
+        .catch(() => {
+            BLOG_POSTS.forEach((post, index) => {
+                bGrid.innerHTML += `
+                    <div class="bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition cursor-pointer group">
+                        <div class="h-52 bg-slate-200 relative overflow-hidden">
+                            <img src="${post.img}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                            <span class="absolute top-4 left-4 bg-sky-600 text-white text-[10px] px-3 py-1 rounded-full font-bold uppercase">${post.tag}</span>
+                        </div>
+                        <div class="p-8">
+                            <h4 class="font-bold text-xl mb-3">${post.title}</h4>
+                            <p class="text-slate-500 text-sm mb-6">${post.desc}</p>
+                            <button onclick="openBlog(${index}, false)" class="text-sky-600 font-bold text-sm flex items-center gap-2 hover:gap-3 transition-all">
+                                Découvrir l'article <i class="fas fa-arrow-right text-xs"></i>
+                            </button>
+                        </div>
+                    </div>`;
+            });
+            window._allPosts = BLOG_POSTS;
+        });
 
     /* --- AUTO-DÉFILEMENT GALERIE toutes les 3 secondes --- */
     setInterval(() => slideGallery(1), 3000);
 
     /* --- AUTO-DÉFILEMENT CAS CLINIQUES toutes les 4 secondes --- */
     setInterval(() => slideBA(1), 4000);
+
+    /* --- FORMULAIRE WHATSAPP --- */
+    document.getElementById('whatsapp-form').onsubmit = (e) => {
+        e.preventDefault();
+        const name = document.getElementById('p-name').value;
+        const motif = document.getElementById('p-motif').value;
+        const text = `Bonjour Dr Patrick FOUENANG, je souhaite prendre RDV.\nNom: ${name}\nMotif: ${motif}`;
+        window.open(`https://wa.me/237699485207?text=${encodeURIComponent(text)}`, '_blank');
+    };
 
 }); // ← FIN du DOMContentLoaded
 
@@ -205,26 +241,19 @@ function closeModal() {
     document.getElementById('modal-rdv').classList.replace('flex', 'hidden');
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-    document.getElementById('whatsapp-form').onsubmit = (e) => {
-        e.preventDefault();
-        const name = document.getElementById('p-name').value;
-        const motif = document.getElementById('p-motif').value;
-        const text = `Bonjour Dr Patrick FOUENANG, je souhaite prendre RDV.\nNom: ${name}\nMotif: ${motif}`;
-        window.open(`https://wa.me/237699485207?text=${encodeURIComponent(text)}`, '_blank');
-    };
-});
-
 /** ============================================
     MODAL BLOG
     ============================================ **/
 
-function openBlog(index) {
-    const post = BLOG_POSTS[index];
+function openBlog(index, isCms) {
+    const post = (window._allPosts || BLOG_POSTS)[index];
+    const content = isCms
+        ? post.body.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+        : post.content;
     document.getElementById('blog-modal-img').src = post.img;
     document.getElementById('blog-modal-tag').textContent = post.tag;
     document.getElementById('blog-modal-title').textContent = post.title;
-    document.getElementById('blog-modal-content').innerHTML = post.content;
+    document.getElementById('blog-modal-content').innerHTML = content;
     document.getElementById('modal-blog').classList.replace('hidden', 'flex');
     document.body.style.overflow = 'hidden';
 }
@@ -232,7 +261,12 @@ function openBlog(index) {
 function closeBlog() {
     document.getElementById('modal-blog').classList.replace('flex', 'hidden');
     document.body.style.overflow = '';
-}/** URGENCE **/
+}
+
+/** ============================================
+    URGENCE
+    ============================================ **/
+
 function openUrgence() {
     document.getElementById('modal-urgence').classList.replace('hidden', 'flex');
     document.body.style.overflow = 'hidden';
